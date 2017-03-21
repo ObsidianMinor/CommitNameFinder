@@ -20,6 +20,11 @@ namespace CommitNameFinder
             application.HelpOption("-? | -h | --help");
             application.OnExecute(() =>
             {
+                if(string.IsNullOrWhiteSpace(userIdArg.Value))
+                {
+                    application.ShowHelp();
+                    return 1;
+                }
                 userId = userIdArg.Value;
                 if (searchForksOp.HasValue())
                     forks = true;
@@ -27,7 +32,10 @@ namespace CommitNameFinder
                     accessToken = accessTokenOp.Value();
                 return 0;
             });
-            application.Execute(args);
+
+            if(application.Execute(args) != 0)
+                return;
+
             new Program().StartAsync(accessToken, userId, forks).GetAwaiter().GetResult();
         }
 
