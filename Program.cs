@@ -71,7 +71,7 @@ namespace CommitNameFinder
                 var repoCommits = await github.Repository.Commit.GetAll(repo.Id);
                 Console.WriteLine($"Processing commits...");
 
-                foreach(GitHubCommit commit in repoCommits.Where(repoCommit => repoCommit.Author?.Login == userId))
+                foreach(GitHubCommit commit in repoCommits.Where(repoCommit => string.Equals(repoCommit.Author?.Login, userId, StringComparison.InvariantCultureIgnoreCase)))
                 {
                     Console.WriteLine($"Processing commit {commit.Sha}...");
                     foundNames.Add(commit.Commit.Committer.Name);
@@ -87,7 +87,7 @@ namespace CommitNameFinder
         static void WriteNames(HashSet<string> names)
         {
             Console.WriteLine($"Name search complete! Found {names.Count} unique names");
-            foreach (var name in names.Distinct())
+            foreach (var name in names)
                 Console.WriteLine($"\t{name}");
         }
     }
